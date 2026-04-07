@@ -1,182 +1,152 @@
-let socket;
-let map, userMarker, restaurantMarker;
+// الاتصال بالسيرفر
+const socket = io("https://fadfood-server.onrender.com");
+
+let myOrderId = null;
 let userLatLng = null;
-let currentOrderId = null;
+let map = null;
+let marker = null;
 
-const alertSound = new Audio('bell.mp3');
-
-// بيانات حساب الحريف
-let customerData = { name: '', phone: '' };
-
-// 1. الانتقال من صفحة تسجيل الدخول إلى صفحة الطلب
+// 1. دالة تسجيل الدخول والتحقق من البيانات (UX Validation)
 function handleLogin() {
     const name = document.getElementById('customerName').value.trim();
     const phone = document.getElementById('customerPhone').value.trim();
-    
-    if (!name ||!phone) {
-        alert("الرجاء إدخال اسمك ورقم هاتفك للمتابعة.");
+
+    // التحقق من الاسم
+    if (name === "") {
+        alert("الرجاء إدخال اسمك الكامل 👤");
         return;
     }
 
-    // حفظ بيانات الحريف
-    customerData.name = name;
-    customerData.phone = phone;
-    document.getElementById('displayName').innerText = name.split(' '); // إظهار الاسم الأول فقط للترحيب
+    // التحقق من رقم الهاتف (8 أرقام فقط)
+    const phoneRegex = /^[0-9]{8}$/;
+    if (!phoneRegex.test(phone)) {
+        alert("الرجاء إدخال رقم هاتف تونسي صحيح يتكون من 8 أرقام 📱");
+        return;
+    }
 
-    // تفعيل سياسة تشغيل الصوت في المتصفح بعد أول تفاعل
-    alertSound.play().then(() => alertSound.pause()).catch(() => {});
-
-    // إخفاء صفحة الدخول وإظهار صفحة الطلب والخريطة (بدون تحديث الصفحة)
+    // الانتقال لقسم الطلب
+    document.getElementById('displayName').innerText = name;
     document.getElementById('loginSection').style.display = 'none';
     document.getElementById('orderSection').style.display = 'block';
-
-    // تهيئة الخريطة للعمل
-    initMap();
-
-    // الاتصال بخادم Socket.io الخاص بك على Render
-    socket = io('https://fadfood-backend.onrender.com');
-    setupSocketListeners();
 }
 
-// 2. تهيئة الخريطة لمدينة القيروان
-function initMap() {
-    // التمركز مبدئياً على وسط القيروان
-    map = L.map('map').setView([35.6727, 10.0949], 13); 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
-}
-
-// 3. تحديد موقع الحريف بدقة عبر GPS
+// 2. دالة جلب موقع المستخدم وعرض الخريطة
 function getUserLocation() {
+    const btn = document.getElementById('locationBtn');
+    
+    // تحسين تجربة المستخدم: إظهار رسالة تحميل لمنع الضغط المتكرر
+    btn.innerText = "جاري البحث عن موقعك... ⏳";
+    btn.disabled = true;
+
     if (navigator.geolocation) {
-        // نغير النص ليعرف المستخدم أننا نبحث عن موقعه
-        const btn = document.querySelector('.location-btn');
-        btn.innerText = "⏳ جاري تحديد الموقع...";
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                userLatLng = { lat: position.coords.latitude, lng: position.coords.longitude };
+                
+                // تحديث شكل الزر بعد النجاح
+                btn.innerText = "✅ تم تحديد الموقع بنجاح";
+                btn.style.backgroundColor = "var(--success)";
+                btn.style.color = "white";
 
-        navigator.geolocation.getCurrentPosition((position) => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            userLatLng = L.latLng(lat, lng);
-            
-            // رسم علامة للمستخدم على الخريطة
-            if (userMarker) map.removeLayer(userMarker);
-            userMarker = L.marker(userLatLng).addTo(map).bindPopup("📍 موقع التوصيل الخاص بك").openPopup();
-            
-            // تحريك الكاميرا نحو المستخدم
-            map.flyTo(userLatLng, 15);
-            btn.innerText = "✅ تم التحديد بنجاح";
-            btn.style.backgroundColor = "var(--success)";
-            
-            // إعادة حساب السعر لو كان قد اختار المطعم بالفعل
-            calculateDelivery(); 
-        }, () => {
-            alert("يرجى تفعيل الـ GPS والسماح للمتصفح بتحديد موقعك.");
-            btn.innerText = "📍 تحديد موقعي عبر الـ GPS";
-        }, { enableHighAccuracy: true });
+                // رسم الخريطة إذا لم تكن موجودة
+                if (!map) {
+                    map = L.map('map').setView([userLatLng.lat, userLatLng.lng], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                    marker = L.marker([userLatLng.lat, userLatLng.lng]).addTo(map);
+                } else {
+                    map.setView([userLatLng.lat, userLatLng.lng], 15);
+                    marker.setLatLng([userLatLng.lat, userLatLng.lng]);
+                }
+
+                calculateDelivery(); // حساب التكلفة فوراً
+            },
+            (error) => {
+                alert("تعذر الوصول إلى موقعك. تأكد من تفعيل الـ GPS 📍");
+                btn.innerText = "📍 تحديد موقعي عبر الـ GPS";
+                btn.disabled = false;
+            }
+        );
     } else {
-        alert("عذراً، متصفحك لا يدعم تحديد الموقع.");
+        alert("متصفحك لا يدعم تحديد الموقع!");
     }
 }
 
-// 4. حساب المسافة والسعر (1.5 دينار لكل 1 كيلومتر)
+// 3. دالة حساب مسافة وسعر التوصيل
 function calculateDelivery() {
-    const restCoords = document.getElementById('restaurantSelect').value;
-    
-    if (restCoords && userLatLng) {
-        // تحويل نص الإحداثيات إلى أرقام
-        const [restLat, restLng] = restCoords.split(',').map(Number);
-        const restLatLng = L.latLng(restLat, restLng);
+    const restSelect = document.getElementById('restaurantSelect').value;
+    const confirmBtn = document.getElementById('confirmBtn');
 
-        // وضع علامة المطعم على الخريطة
-        if (restaurantMarker) map.removeLayer(restaurantMarker);
-        restaurantMarker = L.marker(restLatLng).addTo(map).bindPopup("🍔 المطعم المختار").openPopup();
+    if (userLatLng && restSelect) {
+        const [restLat, restLng] = restSelect.split(',');
         
-        // تعديل زوم الخريطة ليظهر الحريف والمطعم معاً
-        map.fitBounds(L.latLngBounds(userLatLng, restLatLng), { padding:  });
+        // حساب المسافة بخوارزمية (Haversine)
+        const R = 6371; // نصف قطر الأرض بالكيلومتر
+        const dLat = (restLat - userLatLng.lat) * Math.PI / 180;
+        const dLon = (restLng - userLatLng.lng) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(userLatLng.lat * Math.PI / 180) * Math.cos(restLat * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distance = (R * c).toFixed(2); // المسافة بالكيلومتر
 
-        // حساب المسافة (مكتبة Leaflet تعيد المسافة بالأمتار)
-        const distanceMeters = userLatLng.distanceTo(restLatLng);
-        const distanceKm = (distanceMeters / 1000).toFixed(2);
-        
-        // حساب التكلفة (مع حد أدنى 2 دينار تونسي لتغطية النفقات الأساسية)
-        let price = (distanceKm * 1.5);
-        if (price < 2) price = 2.00;
+        const price = (distance * 1.5).toFixed(2); // التكلفة: 1.5 دينار لكل كيلو
 
-        // عرض الفاتورة المصغرة للحريف
-        document.getElementById('distanceVal').innerText = distanceKm;
-        document.getElementById('priceVal').innerText = price.toFixed(2);
+        document.getElementById('distanceVal').innerText = distance;
+        document.getElementById('priceVal').innerText = price;
         document.getElementById('deliveryInvoice').style.display = 'block';
-        
-        // السماح بإرسال الطلب الآن
-        document.getElementById('confirmBtn').disabled = false;
+        confirmBtn.disabled = false; // تفعيل زر الإرسال
+    } else {
+        document.getElementById('deliveryInvoice').style.display = 'none';
+        confirmBtn.disabled = true;
     }
 }
 
-// 5. إرسال الطلب النهائي
+// 4. دالة إرسال الطلب للسيرفر
 function submitOrder() {
-    const food = document.getElementById('foodItem').value.trim();
-    if (!food) return alert('الرجاء كتابة الوجبات التي تريد طلبها أولاً!');
-    if (!userLatLng) return alert('الرجاء الضغط على زر تحديد موقعي على الخريطة!');
+    const name = document.getElementById('customerName').value;
+    const food = document.getElementById('foodItem').value;
+    const rest = document.getElementById('restaurantSelect');
+    const restName = rest.options[rest.selectedIndex].text;
 
-    const restSelect = document.getElementById('restaurantSelect');
-    const restName = restSelect.options.text;
-    const finalPrice = document.getElementById('priceVal').innerText;
+    if(!food || !rest.value) return alert("الرجاء كتابة طلبك واختيار المطعم!");
 
-    // توليد رقم طلب فريد
-    currentOrderId = "ORD-" + Math.floor(Math.random() * 100000);
+    myOrderId = "FF" + Date.now();
     
-    // تجميع بيانات الطلب
-    const orderData = { 
-        id: currentOrderId, 
-        customerName: customerData.name,
-        customerPhone: customerData.phone,
-        food: food,
-        restaurant: restName,
-        address: `خط العرض: ${userLatLng.lat.toFixed(4)}، خط الطول: ${userLatLng.lng.toFixed(4)}`, // سيرى العامل الإحداثيات لفتحها في خرائطه
-        deliveryPrice: finalPrice,
-        status: 'في انتظار الموافقة'
-    };
+    // إرسال البيانات للسيرفر
+    socket.emit('send_order', {
+        id: myOrderId,
+        client: name,
+        items: food + " (من: " + restName + ")",
+        location: "إحداثيات: " + userLatLng.lat.toFixed(4) + "," + userLatLng.lng.toFixed(4)
+    });
 
-    // الإرسال للسيرفر
-    socket.emit('new_order', orderData);
-
-    // إخفاء صفحة الطلب والانتقال لصفحة التتبع (SPA)
     document.getElementById('orderSection').style.display = 'none';
     document.getElementById('trackingSection').style.display = 'block';
 }
 
-// 6. الاستماع لتحديثات حالة الطلب اللحظية
-function setupSocketListeners() {
-    socket.on('status_updated', (data) => {
-        // التأكد أن التحديث يخص طلب هذا الحريف فقط
-        if (data.orderId === currentOrderId) {
-            
-            // تشغيل صوت تنبيه
-            alertSound.play().catch(e => console.log("التنبيه الصوتي يعمل", e));
-            
-            // تحديث النص
-            document.getElementById('statusMessage').innerText = data.statusText;
-            
-            // تحديث تصميم الـ Stepper ديناميكياً
-            if (data.step >= 1) document.getElementById('step1').className = 'step completed';
-            
-            if (data.step >= 2) {
-                document.getElementById('step2').className = data.step === 2? 'step active' : 'step completed';
-            }
-            
-            if (data.step === 3) {
-                document.getElementById('step3').className = 'step completed';
-            }
-
-            // إذا قام العامل بإرفاق صورة التوصيل كبيانات ثنائية
-            if (data.imageBuffer) {
-                const blob = new Blob(, { type: 'image/jpeg' });
-                const imgUrl = URL.createObjectURL(blob);
-                const imgElement = document.getElementById('deliveryImage');
-                imgElement.src = imgUrl;
-                imgElement.style.display = 'block';
-            }
+// 5. استقبال التحديثات من السيرفر (التتبع)
+socket.on('order_status_update', (data) => {
+    if(data.id === myOrderId) {
+        document.getElementById('statusMessage').innerText = data.status;
+        
+        // تحديث شريط التتبع (Stepper)
+        if(data.step === 2) {
+            document.getElementById('step1').classList.replace('active', 'completed');
+            document.getElementById('step2').classList.add('active');
+        } else if (data.step === 3) {
+            document.getElementById('step2').classList.replace('active', 'completed');
+            document.getElementById('step3').classList.add('active');
         }
-    });
-}
+    }
+});
+
+// 6. استقبال صورة الطلب من العامل
+socket.on('show_order_photo', (data) => {
+    if(data.id === myOrderId) {
+        document.getElementById('deliveryImage').style.display = 'block';
+        document.getElementById('deliveryImage').src = data.photo;
+        
+        // تشغيل صوت تنبيه خفيف
+        new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3').play().catch(()=>{});
+    }
+});
