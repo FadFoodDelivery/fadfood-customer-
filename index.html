@@ -26,17 +26,23 @@
         <section id="loginSection" class="page-section">
             <h2>تسجيل الدخول</h2>
             <p class="subtitle">يرجى إدخال بياناتك لتأكيد هويتك وتأمين طلبك.</p>
-            <input type="text" id="customerName" class="input-field" placeholder="الاسم الكامل (مثال: أحمد بن علي)">
-            <input type="tel" id="customerPhone" class="input-field" placeholder="رقم الهاتف (مثال: 22334455)">
-            <button onclick="handleLogin()" class="btn primary-btn">تسجيل الدخول وبدء الطلب</button>
+            <input type="text" id="customerName" class="input-field" placeholder="الاسم الكامل">
+            <input type="tel" id="customerPhone" class="input-field" placeholder="رقم الهاتف (8 أرقام)">
+            <button onclick="handleLogin()" class="btn primary-btn">إرسال كود التفعيل</button>
+        </section>
+
+        <section id="otpSection" class="page-section" style="display: none;">
+            <h2>تأكيد رقم الهاتف</h2>
+            <p class="subtitle">أرسلنا كود من 4 أرقام إلى رقمك عبر الواتساب.</p>
+            <input type="number" id="otpInput" class="input-field" placeholder="أدخل الكود هنا (مثال: 1234)">
+            <p id="timerText" style="color: var(--primary); font-weight: bold; margin-bottom: 15px;">الرجاء الانتظار...</p>
+            <button onclick="verifyOTP()" class="btn primary-btn">تأكيد الكود ✅</button>
         </section>
 
         <section id="orderSection" class="page-section" style="display: none;">
             <h2>مرحباً يا <span id="displayName" class="highlight"></span>!</h2>
-            
             <h3>1. ماذا تريد أن تأكل؟</h3>
             <input type="text" id="foodItem" class="input-field" placeholder="مثال: 2 بيتزا و 1 سندويتش مقلوب">
-            
             <h3>2. اختر مطعماً في القيروان</h3>
             <select id="restaurantSelect" class="input-field" onchange="calculateDelivery()">
                 <option value="">-- اختر المطعم من القائمة --</option>
@@ -46,31 +52,25 @@
                 <option value="35.6710,10.0920">مطعم نقشة (Nakcha)</option>
                 <option value="35.6750,10.0950">كفتاجي خيري (Kafteji Khayri)</option>
             </select>
-
             <h3>3. حدد موقعك للتوصيل</h3>
             <button onclick="getUserLocation()" id="locationBtn" class="btn secondary-btn location-btn">📍 تحديد موقعي عبر الـ GPS</button>
-            
             <div id="map" class="map-container"></div>
-
             <div id="deliveryInvoice" class="invoice-box" style="display: none;">
                 <p>المسافة التقريبية: <strong id="distanceVal">0</strong> كم</p>
-                <p>تكلفة التوصيل (1.5 د.ت/كم): <strong id="priceVal" class="price-highlight">0</strong> د.ت</p>
+                <p>تكلفة التوصيل: <strong id="priceVal" class="price-highlight">0</strong> د.ت</p>
             </div>
-
             <button onclick="submitOrder()" class="btn primary-btn submit-btn" id="confirmBtn" disabled>تأكيد وإرسال الطلب 🚀</button>
         </section>
 
         <section id="trackingSection" class="page-section" style="display: none;">
             <h2>تتبع طلبك</h2>
-            
             <div class="stepper">
                 <div class="step active" id="step1"><div class="step-icon">1</div><div class="step-label">تم الإرسال</div></div>
                 <div class="step" id="step2"><div class="step-icon">2</div><div class="step-label">جاري التجهيز</div></div>
                 <div class="step" id="step3"><div class="step-icon">3</div><div class="step-label">تم التوصيل</div></div>
             </div>
-
             <div class="status-box" id="statusMessage">جاري إرسال الطلب لإدارة FadFood...</div>
-            <img id="deliveryImage" class="delivery-img" style="display: none;" alt="صورة إثبات التوصيل">
+            <img id="deliveryImage" class="delivery-img" style="display: none;">
         </section>
 
     </div>
