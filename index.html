@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="floating-bg">
+        <div class="floating-item" style="left: 10%; animation-duration: 15s; animation-delay: 0s;">🛵</div>
+        <div class="floating-item" style="left: 30%; animation-duration: 12s; animation-delay: 2s;">🍕</div>
+        <div class="floating-item" style="left: 70%; animation-duration: 18s; animation-delay: 1s;">🍔</div>
+        <div class="floating-item" style="left: 85%; animation-duration: 14s; animation-delay: 4s;">🛵</div>
+        <div class="floating-item" style="left: 50%; animation-duration: 20s; animation-delay: 0.5s;">🍟</div>
+    </div>
+
     <header class="app-header">
         <img src="logo.png" alt="FadFood Logo" class="app-logo" onerror="this.src='https://via.placeholder.com/80?text=FadFood'">
         <h1>FadFood Delivery</h1>
@@ -40,7 +48,7 @@
             </select>
 
             <h3>3. حدد موقعك للتوصيل</h3>
-            <button onclick="getUserLocation()" class="btn secondary-btn location-btn">📍 تحديد موقعي عبر الـ GPS</button>
+            <button onclick="getUserLocation()" id="locationBtn" class="btn secondary-btn location-btn">📍 تحديد موقعي عبر الـ GPS</button>
             
             <div id="map" class="map-container"></div>
 
