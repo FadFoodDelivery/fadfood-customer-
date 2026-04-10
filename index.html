@@ -10,95 +10,53 @@
 </head>
 <body>
     <div class="floating-bg">
-        <div class="floating-item" style="left: 10%; animation-duration: 15s; animation-delay: 0s;">🛵</div>
-        <div class="floating-item" style="left: 30%; animation-duration: 12s; animation-delay: 2s;">🍕</div>
-        <div class="floating-item" style="left: 70%; animation-duration: 18s; animation-delay: 1s;">🍔</div>
-        <div class="floating-item" style="left: 85%; animation-duration: 14s; animation-delay: 4s;">🛵</div>
-        <div class="floating-item" style="left: 50%; animation-duration: 20s; animation-delay: 0.5s;">🍟</div>
+        <div class="floating-item" style="left: 10%; animation-duration: 15s;">🛵</div>
+        <div class="floating-item" style="left: 70%; animation-duration: 18s;">🍔</div>
     </div>
 
     <header class="app-header">
-        <img src="logo.png" alt="FadFood Logo" class="app-logo" onerror="this.src='https://via.placeholder.com/80?text=FadFood'">
+        <img src="logo.png" alt="FadFood" class="app-logo" onerror="this.src='https://via.placeholder.com/80'">
         <h1>FadFood Delivery</h1>
     </header>
 
     <div class="container">
-        
         <section id="loginSection" class="page-section">
             <h2>تسجيل الدخول</h2>
-            <p class="subtitle">سجل دخولك بحساب جوجل لتأمين طلبك بسرعة 🚀</p>
-            
-            <div style="display: flex; justify-content: center; margin-top: 20px;">
-                <div id="g_id_onload"
-                     data-client_id="298091292679-gsfpitb7f1ka8qdriv5lcv5m9d8qk0n1.apps.googleusercontent.com"
-                     data-context="signin"
-                     data-ux_mode="popup"
-                     data-callback="handleCredentialResponse"
-                     data-auto_prompt="false">
-                </div>
-
-                <div class="g_id_signin"
-                     data-type="standard"
-                     data-shape="rectangular"
-                     data-theme="outline"
-                     data-text="signin_with"
-                     data-size="large"
-                     data-logo_alignment="left">
-                </div>
+            <div id="g_id_onload"
+                 data-client_id="298091292679-gsfpitb7f1ka8qdriv5lcv5m9d8qk0n1.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse">
             </div>
+            <div class="g_id_signin" data-type="standard"></div>
         </section>
 
         <section id="orderSection" class="page-section" style="display: none;">
-            <h2>مرحباً يا <span id="displayName" class="highlight"></span>!</h2>
-            <h3>1. ماذا تريد أن تأكل؟</h3>
-            <input type="text" id="foodItem" class="input-field" placeholder="مثال: 2 بيتزا و 1 سندويتش مقلوب">
-            
-            <h3>2. اختر مطعماً في القيروان</h3>
+            <h2>مرحباً <span id="displayName"></span>!</h2>
+            <input type="text" id="foodItem" class="input-field" placeholder="ماذا تريد أن تأكل؟">
             <select id="restaurantSelect" class="input-field" onchange="calculateDelivery()">
-                <option value="">-- اختر المطعم من القائمة --</option>
-                <option value="35.6727,10.0949">مطعم البريجة (El Brija)</option>
-                <option value="35.6740,10.0980">مطعم Ché Djo's</option>
-                <option value="35.6780,10.1010">Plan B القيروان</option>
-                <option value="35.6710,10.0920">مطعم نقشة (Nakcha)</option>
-                <option value="35.6750,10.0950">كفتاجي خيري (Kafteji Khayri)</option>
+                <option value="">-- اختر المطعم --</option>
+                <option value="35.6727,10.0949">مطعم البريجة</option>
+                <option value="35.6780,10.1010">Plan B</option>
             </select>
-
-            <h3>3. حدد موقعك للتوصيل</h3>
-            <button onclick="getUserLocation()" id="locationBtn" class="btn secondary-btn location-btn">📍 تحديد موقعي عبر الـ GPS</button>
             <div id="map" class="map-container"></div>
-            
-            <div id="deliveryInvoice" class="invoice-box" style="display: none;">
-                <p>المسافة التقريبية: <strong id="distanceVal">0</strong> كم</p>
-                <p>تكلفة التوصيل: <strong id="priceVal" class="price-highlight">0</strong> د.ت</p>
-            </div>
-            
-            <button onclick="submitOrder()" class="btn primary-btn submit-btn" id="confirmBtn" disabled>تأكيد وإرسال الطلب 🚀</button>
+            <button onclick="submitOrder()" class="btn primary-btn" id="confirmBtn" disabled>إرسال الطلب 🚀</button>
         </section>
 
         <section id="trackingSection" class="page-section" style="display: none;">
             <h2>تتبع طلبك</h2>
-            <div class="stepper">
-                <div class="step active" id="step1"><div class="step-icon">1</div><div class="step-label">تم الإرسال</div></div>
-                <div class="step" id="step2"><div class="step-icon">2</div><div class="step-label">جاري التجهيز</div></div>
-                <div class="step" id="step3"><div class="step-icon">3</div><div class="step-label">تم التوصيل</div></div>
-            </div>
-            <div class="status-box" id="statusMessage">جاري إرسال الطلب لإدارة FadFood...</div>
-            <img id="deliveryImage" class="delivery-img" style="display: none;">
-
+            <div class="status-box" id="statusMessage">جاري المعالجة...</div>
+            
             <div class="social-contact">
-                <h3>تواصل مع إدارة FadFood</h3>
+                <h3>تواصل معنا</h3>
                 <div class="social-buttons">
-                    <a href="https://wa.me/21628011748" target="_blank" class="social-btn whatsapp">💬 واتساب</a>
-                    <a href="https://www.facebook.com/profile.php?id=100088498393651" target="_blank" class="social-btn facebook">📘 فيسبوك</a>
-                    <a href="https://www.instagram.com/fadfooddelivery?igsh=ajNubWNobHpycTJy" target="_blank" class="social-btn instagram">📸 إنستغرام</a>
+                    <a href="https://wa.me/21628011748" target="_blank" class="social-btn whatsapp">واتساب</a>
+                    <a href="https://www.facebook.com/profile.php?id=100088498393651" target="_blank" class="social-btn facebook">فيسبوك</a>
+                    <a href="https://www.instagram.com/fadfooddelivery" target="_blank" class="social-btn instagram">إنستغرام</a>
                 </div>
             </div>
         </section>
-
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="customer.js"></script>
 </body>
 </html>
