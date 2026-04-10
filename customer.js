@@ -4,66 +4,37 @@ let myOrderId = null;
 let userLatLng = null;
 let map = null;
 let marker = null;
-let customerPhoneGlobal = "";
+let customerEmailGlobal = ""; // سنعتمد على البريد الإلكتروني بدلاً من الهاتف
 
-// 1. طلب كود التفعيل
-function handleLogin() {
-    const name = document.getElementById('customerName').value.trim();
-    const phone = document.getElementById('customerPhone').value.trim();
+// --- 🌐 قسم تسجيل الدخول بجوجل ---
 
-    if (name === "" || !/^[0-9]{8}$/.test(phone)) {
-        alert("الرجاء إدخال اسمك ورقم هاتف تونسي صحيح (8 أرقام) 📱");
-        return;
-    }
+// دالة لفك تشفير بيانات جوجل (JWT)
+function decodeJwtResponse(token) {
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+}
 
-    customerPhoneGlobal = phone;
-    document.getElementById('displayName').innerText = name;
+// الدالة التي تعمل فور نجاح تسجيل الدخول بجوجل
+function handleCredentialResponse(response) {
+    // 1. استخراج بيانات المستخدم
+    const responsePayload = decodeJwtResponse(response.credential);
     
-    // إرسال طلب للسيرفر لتوليد الكود
-    socket.emit('request_otp', { phone: phone });
+    // 2. حفظ الاسم والإيميل
+    const name = responsePayload.name;
+    customerEmailGlobal = responsePayload.email;
 
-    // إظهار شاشة الكود
+    // 3. الانتقال لقسم الطلبات مباشرة
+    document.getElementById('displayName').innerText = name;
     document.getElementById('loginSection').style.display = 'none';
-    document.getElementById('otpSection').style.display = 'block';
-    startTimer();
+    document.getElementById('orderSection').style.display = 'block';
 }
 
-// 2. عداد تنازلي بسيط
-function startTimer() {
-    let timeLeft = 60;
-    const timerText = document.getElementById('timerText');
-    const interval = setInterval(() => {
-        timeLeft--;
-        timerText.innerText = `إعادة الإرسال بعد: ${timeLeft} ثانية`;
-        if (timeLeft <= 0) {
-            clearInterval(interval);
-            timerText.innerHTML = `<a href="#" onclick="handleLogin()" style="color:var(--primary);">إعادة إرسال الكود</a>`;
-        }
-    }, 1000);
-}
+// --- 📍 قسم الخرائط والطلبات ---
 
-// 3. التحقق من الكود المدخل
-function verifyOTP() {
-    const otp = document.getElementById('otpInput').value.trim();
-    if(otp.length !== 4) {
-        alert("الكود يجب أن يتكون من 4 أرقام 🔢");
-        return;
-    }
-    // إرسال الكود للسيرفر للتحقق
-    socket.emit('verify_otp', { phone: customerPhoneGlobal, code: otp });
-}
-
-// 4. استجابة السيرفر للتحقق
-socket.on('otp_result', (data) => {
-    if(data.success) {
-        document.getElementById('otpSection').style.display = 'none';
-        document.getElementById('orderSection').style.display = 'block';
-    } else {
-        alert("الكود خاطئ، الرجاء المحاولة مرة أخرى ❌");
-    }
-});
-
-// باقي الدوال كما هي (تحديد الموقع، إرسال الطلب، التتبع)
 function getUserLocation() {
     const btn = document.getElementById('locationBtn');
     btn.innerText = "جاري البحث عن موقعك... ⏳";
@@ -123,7 +94,6 @@ function calculateDelivery() {
 }
 
 function submitOrder() {
-    const name = document.getElementById('customerName').value;
     const food = document.getElementById('foodItem').value;
     const rest = document.getElementById('restaurantSelect');
     const restName = rest.options[rest.selectedIndex].text;
@@ -132,10 +102,11 @@ function submitOrder() {
 
     myOrderId = "FF" + Date.now();
     
+    // إرسال الطلب للسيرفر، مع تضمين الإيميل (customerEmailGlobal) بدلاً من الهاتف
     socket.emit('send_order', {
         id: myOrderId,
-        client: name,
-        phone: customerPhoneGlobal,
+        client: document.getElementById('displayName').innerText,
+        phone: customerEmailGlobal, // سنرسل الإيميل في خانة رقم التواصل مؤقتاً
         items: food + " (من: " + restName + ")",
         location: userLatLng.lat.toFixed(4) + "," + userLatLng.lng.toFixed(4)
     });
