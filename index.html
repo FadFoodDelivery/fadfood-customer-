@@ -2,58 +2,35 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FadFood - تطبيق الحريف</title>
+    <title>FadFood - طلب وتوصيل</title>
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    <div class="floating-bg">
-        <div class="floating-item" style="left: 10%; animation-duration: 15s;">🛵</div>
-        <div class="floating-item" style="left: 70%; animation-duration: 18s;">🍔</div>
-    </div>
 
     <header class="app-header">
-        <img src="logo.png" alt="FadFood" class="app-logo" onerror="this.src='https://via.placeholder.com/80'">
+        <img src="logo.png" alt="FadFood Logo" class="app-logo">
         <h1>FadFood Delivery</h1>
     </header>
 
     <div class="container">
+        
         <section id="loginSection" class="page-section">
-            <h2>تسجيل الدخول</h2>
-            <div id="g_id_onload"
-                 data-client_id="298091292679-gsfpitb7f1ka8qdriv5lcv5m9d8qk0n1.apps.googleusercontent.com"
-                 data-callback="handleCredentialResponse">
-            </div>
+            <h2>مرحباً بك!</h2>
+            <p>سجل دخولك لتبدأ الطلب 🚀</p>
+            <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID" data-callback="handleCredentialResponse"></div>
             <div class="g_id_signin" data-type="standard"></div>
         </section>
 
         <section id="orderSection" class="page-section" style="display: none;">
-            <h2>مرحباً <span id="displayName"></span>!</h2>
-            <input type="text" id="foodItem" class="input-field" placeholder="ماذا تريد أن تأكل؟">
-            <select id="restaurantSelect" class="input-field" onchange="calculateDelivery()">
-                <option value="">-- اختر المطعم --</option>
-                <option value="35.6727,10.0949">مطعم البريجة</option>
-                <option value="35.6780,10.1010">Plan B</option>
-            </select>
-            <div id="map" class="map-container"></div>
-            <button onclick="submitOrder()" class="btn primary-btn" id="confirmBtn" disabled>إرسال الطلب 🚀</button>
-        </section>
+            </section>
 
         <section id="trackingSection" class="page-section" style="display: none;">
-            <h2>تتبع طلبك</h2>
-            <div class="status-box" id="statusMessage">جاري المعالجة...</div>
-            
-            <div class="social-contact">
-                <h3>تواصل معنا</h3>
-                <div class="social-buttons">
-                    <a href="https://wa.me/21628011748" target="_blank" class="social-btn whatsapp">واتساب</a>
-                    <a href="https://www.facebook.com/profile.php?id=100088498393651" target="_blank" class="social-btn facebook">فيسبوك</a>
-                    <a href="https://www.instagram.com/fadfooddelivery" target="_blank" class="social-btn instagram">إنستغرام</a>
-                </div>
-            </div>
-        </section>
+            </section>
+
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
