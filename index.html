@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,7 @@
     <title>FadFood - تطبيق الحريف</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <div class="floating-bg">
@@ -25,24 +26,33 @@
         
         <section id="loginSection" class="page-section">
             <h2>تسجيل الدخول</h2>
-            <p class="subtitle">يرجى إدخال بياناتك لتأكيد هويتك وتأمين طلبك.</p>
-            <input type="text" id="customerName" class="input-field" placeholder="الاسم الكامل">
-            <input type="tel" id="customerPhone" class="input-field" placeholder="رقم الهاتف (8 أرقام)">
-            <button onclick="handleLogin()" class="btn primary-btn">إرسال كود التفعيل</button>
-        </section>
+            <p class="subtitle">سجل دخولك بحساب جوجل لتأمين طلبك بسرعة 🚀</p>
+            
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <div id="g_id_onload"
+                     data-client_id="YOUR_DUMMY_CLIENT_ID_HERE"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
 
-        <section id="otpSection" class="page-section" style="display: none;">
-            <h2>تأكيد رقم الهاتف</h2>
-            <p class="subtitle">أرسلنا كود من 4 أرقام إلى رقمك عبر الواتساب.</p>
-            <input type="number" id="otpInput" class="input-field" placeholder="أدخل الكود هنا (مثال: 1234)">
-            <p id="timerText" style="color: var(--primary); font-weight: bold; margin-bottom: 15px;">الرجاء الانتظار...</p>
-            <button onclick="verifyOTP()" class="btn primary-btn">تأكيد الكود ✅</button>
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-shape="rectangular"
+                     data-theme="outline"
+                     data-text="signin_with"
+                     data-size="large"
+                     data-logo_alignment="left">
+                </div>
+            </div>
         </section>
 
         <section id="orderSection" class="page-section" style="display: none;">
             <h2>مرحباً يا <span id="displayName" class="highlight"></span>!</h2>
             <h3>1. ماذا تريد أن تأكل؟</h3>
             <input type="text" id="foodItem" class="input-field" placeholder="مثال: 2 بيتزا و 1 سندويتش مقلوب">
+            
             <h3>2. اختر مطعماً في القيروان</h3>
             <select id="restaurantSelect" class="input-field" onchange="calculateDelivery()">
                 <option value="">-- اختر المطعم من القائمة --</option>
@@ -52,13 +62,16 @@
                 <option value="35.6710,10.0920">مطعم نقشة (Nakcha)</option>
                 <option value="35.6750,10.0950">كفتاجي خيري (Kafteji Khayri)</option>
             </select>
+
             <h3>3. حدد موقعك للتوصيل</h3>
             <button onclick="getUserLocation()" id="locationBtn" class="btn secondary-btn location-btn">📍 تحديد موقعي عبر الـ GPS</button>
             <div id="map" class="map-container"></div>
+            
             <div id="deliveryInvoice" class="invoice-box" style="display: none;">
                 <p>المسافة التقريبية: <strong id="distanceVal">0</strong> كم</p>
                 <p>تكلفة التوصيل: <strong id="priceVal" class="price-highlight">0</strong> د.ت</p>
             </div>
+            
             <button onclick="submitOrder()" class="btn primary-btn submit-btn" id="confirmBtn" disabled>تأكيد وإرسال الطلب 🚀</button>
         </section>
 
@@ -80,3 +93,4 @@
     <script src="customer.js"></script>
 </body>
 </html>
+  
