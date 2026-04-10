@@ -1,15 +1,13 @@
-/* 🔤 استيراد خط عربي أنيق */
+/* 🔤 الخطوط والألوان الأساسية */
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
 
-/* 🎨 المتغيرات الأساسية (للتحكم بالألوان بسهولة) */
 :root {
-    --primary: #ff4757;       /* اللون الرئيسي (أحمر) */
-    --primary-hover: #ff6b81; /* لون الزر عند تمرير الماوس */
-    --secondary: #2f3542;     /* اللون الثانوي (رمادي غامق) */
-    --success: #2ed573;       /* لون النجاح (أخضر) */
-    --background: #f1f2f6;    /* لون الخلفية */
-    --card-bg: #ffffff;       /* لون البطاقات */
-    --text: #2f3542;          /* لون النص */
+    --primary: #ff4757;       /* الأحمر الأساسي */
+    --whatsapp-color: #25D366; 
+    --facebook-color: #1877F2;
+    --instagram-color: #E4405F;
+    --card-bg: #ffffff;
+    --background: #f1f2f6;
 }
 
 /* ⚙️ إعدادات عامة */
@@ -22,126 +20,24 @@
 
 body {
     background-color: var(--background);
-    color: var(--text);
-    overflow-x: hidden;
+    direction: rtl; /* لضمان اتجاه النص العربي */
 }
 
-/* 🎈 الخلفية المتحركة */
-.floating-bg {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.floating-item {
-    position: absolute;
-    bottom: -50px;
-    font-size: 2rem;
-    opacity: 0.5;
-    animation: floatUp linear infinite;
-}
-
-@keyframes floatUp {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
-    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-}
-
-/* 📱 رأس الصفحة (اللوجو والعنوان) */
-.app-header {
-    text-align: center;
-    padding: 20px;
-    background-color: var(--card-bg);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-}
-
-.app-logo { 
-    width: 80px; 
-    border-radius: 50%; 
-}
-
-h1 { 
-    color: var(--primary); 
-    font-size: 1.8rem; 
-    margin-top: 10px; 
-}
-
-/* 📦 حاوية التطبيق والأقسام */
+/* 📦 الحاوية والأقسام */
 .container {
     max-width: 600px;
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 20px;
 }
 
 .page-section {
     background: var(--card-bg);
     padding: 25px;
     border-radius: 15px;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     margin-bottom: 20px;
     text-align: center;
 }
-
-h2 { color: var(--secondary); margin-bottom: 10px; }
-h3 { color: var(--secondary); margin: 15px 0 10px; font-size: 1.2rem; text-align: right; }
-.subtitle { color: #747d8c; margin-bottom: 20px; font-size: 0.9rem; }
-.highlight { color: var(--primary); }
-
-/* ✍️ الحقول والأزرار */
-.input-field {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 15px;
-    border: 2px solid #dfe4ea;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-.input-field:focus {
-    border-color: var(--primary);
-    outline: none;
-}
-
-.btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-}
-
-.btn:active { transform: scale(0.98); }
-.primary-btn { background-color: var(--primary); color: white; }
-.primary-btn:hover:not(:disabled) { background-color: var(--primary-hover); }
-.primary-btn:disabled { background-color: #a4b0be; cursor: not-allowed; }
-.secondary-btn { background-color: var(--secondary); color: white; }
-.location-btn { margin-bottom: 15px; }
-
-/* 🗺️ الخريطة والفاتورة */
-.map-container {
-    width: 100%;
-    height: 250px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    border: 2px solid #dfe4ea;
-    z-index: 1; /* لمنع تداخل الخريطة مع القوائم المنسدلة */
-}
-
-.invoice-box {
-    background-color: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px dashed #ced6e0;
-    margin-bottom: 15px;
-    text-align: right;
-}
-
-.price-highlight { color: var(--success); font-size: 1.2rem; }
 
 /* 🛵 شريط تتبع الطلب (Stepper) */
 .stepper {
@@ -151,83 +47,65 @@ h3 { color: var(--secondary); margin: 15px 0 10px; font-size: 1.2rem; text-align
     position: relative;
 }
 
-.stepper::before {
-    content: ''; 
-    position: absolute; 
-    top: 15px; 
-    left: 10%; right: 10%;
-    height: 3px; 
-    background-color: #dfe4ea; 
-    z-index: 0;
-}
-
 .step {
-    position: relative; 
-    z-index: 1; 
-    text-align: center; 
-    width: 33%;
+    flex: 1;
+    position: relative;
+    z-index: 1;
 }
 
 .step-icon {
-    width: 35px; height: 35px; 
-    background-color: #dfe4ea;
-    border-radius: 50%; 
-    line-height: 35px; 
+    width: 35px;
+    height: 35px;
+    background: #dfe4ea;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    line-height: 35px;
     color: white;
-    margin: 0 auto 10px; 
-    font-weight: bold; 
-    border: 3px solid white;
 }
 
-.step.active .step-icon { background-color: var(--primary); }
-.step.completed .step-icon { background-color: var(--success); }
-.step-label { font-size: 0.85rem; color: #747d8c; }
-.step.active .step-label { color: var(--primary); font-weight: bold; }
-.step.completed .step-label { color: var(--success); }
+.step.active .step-icon { background: var(--primary); }
+.step.completed .step-icon { background: #2ed573; }
 
-.status-box {
-    background-color: #eccc68; 
-    padding: 15px; 
-    border-radius: 8px;
-    font-weight: bold; 
-    color: #2f3542; 
-    margin-bottom: 15px;
-}
-
-.delivery-img {
-    width: 100%; 
-    border-radius: 10px; 
-    margin-top: 15px;
-    border: 3px solid var(--success);
-}
-
-/* 💬 أزرار التواصل الاجتماعي */
+/* 💬 قسم التواصل الاجتماعي */
 .social-contact {
-    text-align: center;
     margin-top: 30px;
-    padding: 20px;
-    border-top: 2px dashed #ddd;
+    padding-top: 20px;
+    border-top: 2px dashed #dfe4ea;
+}
+
+.social-contact h3 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #2f3542;
 }
 
 .social-buttons {
     display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 15px;
-    flex-wrap: wrap;
+    flex-direction: column; /* ترتيب عمودي لسهولة الضغط على الهاتف */
+    gap: 12px;
 }
 
 .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     color: white;
     font-weight: bold;
-    transition: transform 0.2s;
+    transition: transform 0.2s, opacity 0.2s;
 }
 
-.whatsapp { background-color: #25D366; }
-.facebook { background-color: #1877F2; }
-.instagram { background-color: #E4405F; }
+.social-btn:active {
+    transform: scale(0.95);
+}
 
-.social-btn:hover { transform: scale(1.05); }
+/* ألوان الأزرار 🎨 */
+.whatsapp { background-color: var(--whatsapp-color); }
+.facebook { background-color: var(--facebook-color); }
+.instagram { background-color: var(--instagram-color); }
+
+.social-btn i {
+    margin-left: 8px; /* مسافة بين الأيقونة والنص */
+}
