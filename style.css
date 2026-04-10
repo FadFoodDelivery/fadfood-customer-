@@ -1,111 +1,233 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+/* 🔤 استيراد خط عربي أنيق */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
 
+/* 🎨 المتغيرات الأساسية (للتحكم بالألوان بسهولة) */
 :root {
-    --primary: #ff4757;
-    --secondary: #2f3542;
-    --success: #2ed573;
-    --bg-color: #f4f7f6;
-    --text-dark: #2f3542;
-    --text-light: #ffffff;
-    --border-color: #ced6e0;
+    --primary: #ff4757;       /* اللون الرئيسي (أحمر) */
+    --primary-hover: #ff6b81; /* لون الزر عند تمرير الماوس */
+    --secondary: #2f3542;     /* اللون الثانوي (رمادي غامق) */
+    --success: #2ed573;       /* لون النجاح (أخضر) */
+    --background: #f1f2f6;    /* لون الخلفية */
+    --card-bg: #ffffff;       /* لون البطاقات */
+    --text: #2f3542;          /* لون النص */
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-body { background-color: var(--bg-color); color: var(--text-dark); padding-bottom: 40px; }
+/* ⚙️ إعدادات عامة */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Tajawal', sans-serif;
+}
 
-/* الترويسة والشعار */
+body {
+    background-color: var(--background);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+/* 🎈 الخلفية المتحركة */
+.floating-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-item {
+    position: absolute;
+    bottom: -50px;
+    font-size: 2rem;
+    opacity: 0.5;
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+/* 📱 رأس الصفحة (اللوجو والعنوان) */
 .app-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* التأثير الزجاجي 🪟 */
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-    
-    padding: 25px 20px 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom: 25px;
-}
-.app-logo {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    border: 3px solid var(--primary);
-}
-.app-header h1 { color: var(--primary); font-size: 1.8rem; font-weight: 700; }
-
-/* الحاويات والحركة بين الصفحات */
-.container { padding: 0 20px; max-width: 500px; margin: 0 auto; }
-.page-section { animation: slideUp 0.4s ease-out; }
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    text-align: center;
+    padding: 20px;
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
 }
 
-/* النصوص وحقول الإدخال */
-h2 { margin-bottom: 10px; color: var(--secondary); font-size: 1.6rem; text-align: center;}
-h3 { margin: 20px 0 10px 0; font-size: 1.1rem; color: var(--secondary); }
-.subtitle { color: #747d8c; margin-bottom: 20px; font-size: 1rem; text-align: center; }
-.highlight { color: var(--primary); }
-.input-field { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid var(--border-color); font-size: 1rem; background: rgba(255, 255, 255, 0.9); }
-.input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 5px rgba(255, 71, 87, 0.2); }
-
-/* الأزرار */
-.btn { width: 100%; padding: 15px; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.2s; }
-.btn:active { transform: scale(0.96); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.primary-btn { background-color: var(--primary); color: var(--text-light); box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); }
-.secondary-btn { background-color: var(--secondary); color: var(--text-light); }
-.location-btn { margin-bottom: 15px; }
-.submit-btn { margin-top: 20px; font-size: 1.2rem; }
-
-/* الخريطة والفاتورة */
-.map-container { height: 280px; width: 100%; border-radius: 12px; z-index: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border: 2px solid white; }
-
-.invoice-box { 
-    /* التأثير الزجاجي 🪟 */
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-right: 5px solid var(--success); 
-    
-    padding: 15px; 
-    border-radius: 10px; 
-    margin-top: 20px; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+.app-logo { 
+    width: 80px; 
+    border-radius: 50%; 
 }
-.invoice-box p { font-size: 1.1rem; margin-bottom: 5px; }
-.price-highlight { color: var(--primary); font-size: 1.4rem; }
 
-/* متتبع الطلب (Stepper) */
-.stepper { display: flex; justify-content: space-between; margin: 30px 0; position: relative; }
-.stepper::before { content: ''; position: absolute; top: 17px; left: 0; width: 100%; height: 3px; background: var(--border-color); z-index: 1; }
-.step { position: relative; z-index: 2; text-align: center; width: 33.33%; }
-.step-icon { width: 38px; height: 38px; border-radius: 50%; background: var(--border-color); color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; font-weight: bold; transition: 0.4s; box-shadow: 0 0 0 3px var(--bg-color); }
-.step.active.step-icon { background: var(--primary); box-shadow: 0 0 0 3px var(--bg-color), 0 0 12px rgba(255, 71, 87, 0.6); }
-.step.completed.step-icon { background: var(--success); box-shadow: 0 0 0 3px var(--bg-color); }
-.step-label { font-size: 0.85rem; color: #747d8c; font-weight: bold; }
-.step.active.step-label { color: var(--text-dark); }
-.step.completed.step-label { color: var(--success); }
-
-/* صندوق التتبع والصور */
-.status-box { 
-    /* التأثير الزجاجي 🪟 */
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    
-    padding: 20px; 
-    border-radius: 12px; 
-    text-align: center; 
-    font-weight: bold; 
-    font-size: 1.1rem; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+h1 { 
     color: var(--primary); 
-    margin-top: 20px; 
+    font-size: 1.8rem; 
+    margin-top: 10px; 
 }
-.delivery-img { width: 100%; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 3px solid rgba(255, 255, 255, 0.5); }
+
+/* 📦 حاوية التطبيق والأقسام */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.page-section {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h2 { color: var(--secondary); margin-bottom: 10px; }
+h3 { color: var(--secondary); margin: 15px 0 10px; font-size: 1.2rem; text-align: right; }
+.subtitle { color: #747d8c; margin-bottom: 20px; font-size: 0.9rem; }
+.highlight { color: var(--primary); }
+
+/* ✍️ الحقول والأزرار */
+.input-field {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 2px solid #dfe4ea;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.input-field:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.btn:active { transform: scale(0.98); }
+.primary-btn { background-color: var(--primary); color: white; }
+.primary-btn:hover:not(:disabled) { background-color: var(--primary-hover); }
+.primary-btn:disabled { background-color: #a4b0be; cursor: not-allowed; }
+.secondary-btn { background-color: var(--secondary); color: white; }
+.location-btn { margin-bottom: 15px; }
+
+/* 🗺️ الخريطة والفاتورة */
+.map-container {
+    width: 100%;
+    height: 250px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #dfe4ea;
+    z-index: 1; /* لمنع تداخل الخريطة مع القوائم المنسدلة */
+}
+
+.invoice-box {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px dashed #ced6e0;
+    margin-bottom: 15px;
+    text-align: right;
+}
+
+.price-highlight { color: var(--success); font-size: 1.2rem; }
+
+/* 🛵 شريط تتبع الطلب (Stepper) */
+.stepper {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    position: relative;
+}
+
+.stepper::before {
+    content: ''; 
+    position: absolute; 
+    top: 15px; 
+    left: 10%; right: 10%;
+    height: 3px; 
+    background-color: #dfe4ea; 
+    z-index: 0;
+}
+
+.step {
+    position: relative; 
+    z-index: 1; 
+    text-align: center; 
+    width: 33%;
+}
+
+.step-icon {
+    width: 35px; height: 35px; 
+    background-color: #dfe4ea;
+    border-radius: 50%; 
+    line-height: 35px; 
+    color: white;
+    margin: 0 auto 10px; 
+    font-weight: bold; 
+    border: 3px solid white;
+}
+
+.step.active .step-icon { background-color: var(--primary); }
+.step.completed .step-icon { background-color: var(--success); }
+.step-label { font-size: 0.85rem; color: #747d8c; }
+.step.active .step-label { color: var(--primary); font-weight: bold; }
+.step.completed .step-label { color: var(--success); }
+
+.status-box {
+    background-color: #eccc68; 
+    padding: 15px; 
+    border-radius: 8px;
+    font-weight: bold; 
+    color: #2f3542; 
+    margin-bottom: 15px;
+}
+
+.delivery-img {
+    width: 100%; 
+    border-radius: 10px; 
+    margin-top: 15px;
+    border: 3px solid var(--success);
+}
+
+/* 💬 أزرار التواصل الاجتماعي */
+.social-contact {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    border-top: 2px dashed #ddd;
+}
+
+.social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.whatsapp { background-color: #25D366; }
+.facebook { background-color: #1877F2; }
+.instagram { background-color: #E4405F; }
+
+.social-btn:hover { transform: scale(1.05); }
