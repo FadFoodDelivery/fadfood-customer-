@@ -1,111 +1,31 @@
-/* 🔤 الخطوط والألوان الأساسية */
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+* { box-sizing: border-box; max-width: 100%; }
+body { font-family: sans-serif; background: #f1f2f6; margin: 0; direction: rtl; }
 
-:root {
-    --primary: #ff4757;       /* الأحمر الأساسي */
-    --whatsapp-color: #25D366; 
-    --facebook-color: #1877F2;
-    --instagram-color: #E4405F;
-    --card-bg: #ffffff;
-    --background: #f1f2f6;
+.container { 
+    width: 100%; 
+    max-width: 500px; 
+    margin: 0 auto; 
+    padding: 15px; 
 }
 
-/* ⚙️ إعدادات عامة */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Tajawal', sans-serif;
-}
-
-body {
-    background-color: var(--background);
-    direction: rtl; /* لضمان اتجاه النص العربي */
-}
-
-/* 📦 الحاوية والأقسام */
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.page-section {
-    background: var(--card-bg);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+.page-section { 
+    background: white; 
+    padding: 20px; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    margin-bottom: 20px; 
     text-align: center;
 }
 
-/* 🛵 شريط تتبع الطلب (Stepper) */
-.stepper {
-    display: flex;
-    justify-content: space-between;
-    margin: 30px 0;
-    position: relative;
-}
+.input-field { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+.btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.primary-btn { background: #ff4757; color: white; }
 
-.step {
-    flex: 1;
-    position: relative;
-    z-index: 1;
-}
+.map-container { height: 200px; margin: 15px 0; border-radius: 10px; }
 
-.step-icon {
-    width: 35px;
-    height: 35px;
-    background: #dfe4ea;
-    border-radius: 50%;
-    margin: 0 auto 10px;
-    line-height: 35px;
-    color: white;
-}
-
-.step.active .step-icon { background: var(--primary); }
-.step.completed .step-icon { background: #2ed573; }
-
-/* 💬 قسم التواصل الاجتماعي */
-.social-contact {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 2px dashed #dfe4ea;
-}
-
-.social-contact h3 {
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    color: #2f3542;
-}
-
-.social-buttons {
-    display: flex;
-    flex-direction: column; /* ترتيب عمودي لسهولة الضغط على الهاتف */
-    gap: 12px;
-}
-
-.social-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    padding: 12px;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    transition: transform 0.2s, opacity 0.2s;
-}
-
-.social-btn:active {
-    transform: scale(0.95);
-}
-
-/* ألوان الأزرار 🎨 */
-.whatsapp { background-color: var(--whatsapp-color); }
-.facebook { background-color: var(--facebook-color); }
-.instagram { background-color: var(--instagram-color); }
-
-.social-btn i {
-    margin-left: 8px; /* مسافة بين الأيقونة والنص */
-}
+/* أزرار التواصل */
+.social-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+.social-btn { text-decoration: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold; }
+.whatsapp { background: #25D366; }
+.facebook { background: #1877F2; }
+.instagram { background: #E4405F; }
